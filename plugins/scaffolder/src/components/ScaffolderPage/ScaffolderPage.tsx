@@ -31,12 +31,14 @@ import {
   EntitySearchBar,
   EntityTagPicker,
   UserListPicker,
+  useEntityPermission,
 } from '@backstage/plugin-catalog-react';
 import { makeStyles } from '@material-ui/core';
 import React, { ComponentType } from 'react';
 import { registerComponentRouteRef } from '../../routes';
 import { TemplateList } from '../TemplateList';
 import { TemplateTypePicker } from '../TemplateTypePicker';
+import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common';
 
 const useStyles = makeStyles(theme => ({
   contentWrapper: {
@@ -72,6 +74,8 @@ export const ScaffolderPageContents = ({
     },
   };
 
+  const { allowed } = useEntityPermission(catalogEntityCreatePermission);
+
   return (
     <Page themeId="home">
       <Header
@@ -85,10 +89,12 @@ export const ScaffolderPageContents = ({
       />
       <Content>
         <ContentHeader title="Available Templates">
-          <CreateButton
-            title="Register Existing Component"
-            to={registerComponentLink && registerComponentLink()}
-          />
+          {allowed && (
+            <CreateButton
+              title="Register Existing Component"
+              to={registerComponentLink && registerComponentLink()}
+            />
+          )}
           <SupportButton>
             Create new software components using standard templates. Different
             templates create different kinds of components (services, websites,
