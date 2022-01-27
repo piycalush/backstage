@@ -1,5 +1,12 @@
 # @backstage/core-components
 
+## 0.8.7
+
+### Patch Changes
+
+- 4c773ed25c: Change subtitle of Header style to use palette.bursts.fontColor
+- a681cb9c2f: Make linkTarget configurable for MarkdownContent component
+
 ## 0.8.6
 
 ### Patch Changes
