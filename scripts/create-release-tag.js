@@ -17,6 +17,7 @@
  */
 
 const { Octokit } = require('@octokit/rest');
+const semver = require('semver');
 
 const baseOptions = {
   owner: 'backstage',
@@ -34,26 +35,33 @@ async function main() {
 
   const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-  const date = new Date();
-  const yyyy = date.getUTCFullYear();
-  const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(date.getUTCDate()).padStart(2, '0');
-  const baseTagName = `release-${yyyy}-${mm}-${dd}`;
+  const rootPath = path.resolve(__dirname, '..');
+  const { version: currentVersion } = await fs.readJson(
+    path.join(rootPath, 'package.json'),
+  );
 
-  console.log('Requesting existing tags');
+  // console.log('Requesting existing tags');
 
-  const existingTags = await octokit.repos.listTags({
-    ...baseOptions,
-    per_page: 100,
-  });
-  const existingTagNames = existingTags.data.map(obj => obj.name);
+  // const allTags = await octokit.paginate(octokit.repos.listTags, {
+  //   ...baseOptions,
+  //   per_page: 100,
+  // });
 
-  let tagName = baseTagName;
-  let index = 0;
-  while (existingTagNames.includes(tagName)) {
-    index += 1;
-    tagName = `${baseTagName}.${index}`;
-  }
+  // const existingTagNames = allTags.data
+  //   .map(obj => obj.name)
+  //   .filter(
+  //     tag => tag.match(/^\d+\.\d+\.\d+(?:-next\.\d+)?$/) && semver.valid(tag),
+  //   );
+  // existingTagNames.sort((first, second) => {
+  //   return semver.compare(first, second);
+  // });
+
+  // let tagName = baseTagName;
+  // let index = 0;
+  // while (existingTagNames.includes(tagName)) {
+  //   index += 1;
+  //   tagName = `${baseTagName}.${index}`;
+  // }
 
   console.log(`Creating release tag ${tagName}`);
 
